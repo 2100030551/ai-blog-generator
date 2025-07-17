@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Blog Posts</title>
+
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome (optional) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100 font-sans antialiased">
+
+  <!-- Navbar (YouTube style) -->
+  <nav class="bg-white shadow p-4 flex items-center justify-between">
+    <!-- Left: YouTube Logo and App Title -->
+    <div class="flex items-center space-x-3">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="YouTube Logo" class="h-8 w-auto">
+      <h1 class="text-xl font-bold text-gray-900">AI Blog Generator</h1>
+    </div>
+
+    <!-- Right: Authenticated User Actions -->
+    <div class="flex items-center space-x-6 text-gray-800 text-sm sm:text-base font-medium">
+      <span>Welcome {{ user.username }}</span>
+      <a href="{% url 'all_blogs' %}" class="hover:text-red-600 hover:underline transition">Saved Blog Posts</a>
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="hover:text-red-600 hover:underline transition">Logout</button>
+      </form>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mx-auto mt-10 px-4">
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-xl mb-4 font-semibold text-gray-800">Your Blog Posts</h2>
+
+      {% if blogs %}
+        <div class="space-y-4">
+          {% for blog in blogs %}
+            <a href="{% url 'blog_detail' blog.id %}" class="block hover:bg-gray-100 transition rounded">
+              <div class="border border-gray-300 p-4 rounded-lg">
+                <h3 class="text-lg font-semibold text-gray-900">{{ blog.title }}</h3>
+                <p class="text-gray-600 text-sm">{{ blog.blog_content|truncatechars:100 }}</p>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-gray-600">No blog posts found. Generate one from the home page.</p>
+      {% endif %}
+    </div>
+  </div>
+
+ 
+
+</body>
+</html>

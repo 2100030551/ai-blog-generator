@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Blog Generator</title>
+
+  <!-- TailwindCSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .load {
+      width: 60px;
+      height: 60px;
+      margin: 30px auto;
+      border: solid 6px #dc2626;
+      border-radius: 50%;
+      border-top-color: transparent;
+      border-right-color: transparent;
+      animation: rotate 1s linear infinite;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow fixed top-0 w-full z-50">
+    <div class="flex items-center justify-between px-6 py-3 max-w-7xl mx-auto">
+      <!-- Left: Logo + Title -->
+      <div class="flex items-center space-x-3">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="YouTube Logo" class="w-24 h-auto"/>
+        <span class="text-2xl font-bold text-gray-900 select-none">AI Blog Generator</span>
+      </div>
+
+      <!-- Right: User Links -->
+      <div class="flex items-center space-x-8 text-gray-700 text-lg font-medium">
+        {% if user.is_authenticated %}
+          <span>Welcome {{ user.username }}</span>
+          <a href="{% url 'all_blogs' %}" class="hover:text-red-600 hover:underline transition">Saved Blog Posts</a>
+          <form action="{% url 'logout' %}" method="post" class="inline">
+            {% csrf_token %}
+            <button type="submit" class="text-red-600 hover:underline bg-transparent border-none cursor-pointer">
+              Logout
+            </button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}" class="text-red-600 hover:underline">Login</a>
+          <a href="{% url 'signup' %}" class="text-red-600 hover:underline">Signup</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <aside class="fixed top-14 left-0 w-60 h-full bg-white border-r pt-4 hidden lg:block">
+    <nav class="flex flex-col text-gray-800 text-sm space-y-3 px-4">
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-home text-lg text-red-600"></i><span>Home</span></a>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-fire-alt text-lg text-red-600"></i><span>Trending</span></a>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-photo-video text-lg text-red-600"></i><span>Subscriptions</span></a>
+      <hr class="my-3 border-gray-300"/>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-eye text-lg text-red-600"></i><span>Watched Videos</span></a>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-bolt text-lg text-red-600"></i><span>Trending</span></a>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-shopping-cart text-lg text-red-600"></i><span>Shopping</span></a>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-music text-lg text-red-600"></i><span>Music</span></a>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-broadcast-tower text-lg text-red-600"></i><span>Live</span></a>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-gamepad text-lg text-red-600"></i><span>Gaming</span></a>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-newspaper text-lg text-red-600"></i><span>News</span></a>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-football-ball text-lg text-red-600"></i><span>Sports</span></a>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-podcast text-lg text-red-600"></i><span>Podcast</span></a>
+      <hr class="my-3 border-gray-300"/>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-history text-lg text-red-600"></i><span>History</span></a>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-thumbs-up text-lg text-red-600"></i><span>Liked Videos</span></a>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-play-circle text-lg text-red-600"></i><span>Playlists</span></a>
+      <hr class="my-3 border-gray-300"/>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-cog text-lg text-red-600"></i><span>Settings</span></a>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-question-circle text-lg text-red-600"></i><span>Help</span></a>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-flag text-lg text-red-600"></i><span>Report History</span></a>
+      <a href="#" class="flex items-center space-x-4 py-2 px-3 rounded hover:bg-gray-100 transition"><i class="fas fa-paper-plane text-lg text-red-600"></i><span>Send Feedback</span></a>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="pt-20 lg:ml-60 px-4">
+    <div class="flex-grow container mx-auto mt-10 px-4 sm:px-0">
+      <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md transition-transform transform hover:scale-105 flex flex-col">
+        <!-- Intro -->
+        <div class="text-center">
+          <h2 class="text-2xl font-semibold mb-4">Welcome to the AI Blog Generator</h2>
+          <p class="text-gray-700">
+            Generate high-quality blog articles from YouTube videos using artificial intelligence.
+            Simply enter the link to the YouTube video below and let the AI create the content for you!
+          </p>
+        </div>
+        <br>
+
+        <!-- Youtube Link Form -->
+<form action="{% url 'generate' %}" method="POST" class="mt-6 space-y-4">
+  {% csrf_token %}
+  <label for="video_url" class="block font-semibold mb-2">Enter YouTube Video Link</label>
+  <div class="flex gap-2">
+    <input name="video_url" id="video_url" type="url" placeholder="Paste YouTube Link..." required class="flex-grow p-2 border border-gray-300 rounded-md" />
+    
+    <button type="submit" class="bg-red-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-red-700 transition-all">
+      Generate
+    </button>
+  </div>
+</form>
+
+{% if error %}
+  <div class="text-red-600 font-semibold mt-4">{{ error }}</div>
+{% endif %}
+
+
+
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>
